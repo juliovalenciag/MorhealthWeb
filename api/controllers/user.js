@@ -5,14 +5,14 @@ import jwt from 'jsonwebtoken';
 
 
 
-export const verifyUser = (req,res, next) => {
+export const verifyUser = (req, res, next) => {
     const token = req.cookies.token;
-    if(!token){
-        return res.json({Error: "No esta autenticado"});
+    if (!token) {
+        return res.json({ Error: "No esta autenticado" });
     } else {
-        jwt.verify(token, "jwt-secret-key", (err, decoded) =>{
-            if(err){
-                return res.json({Error: "Token erroneo"});
+        jwt.verify(token, "jwt-secret-key", (err, decoded) => {
+            if (err) {
+                return res.json({ Error: "Token erroneo" });
             } else {
                 req.name = decoded.name;
                 next();
@@ -46,8 +46,8 @@ export const register = (req, res) => {
             hash
         ];
         db.query(q, [values], (err, data) => {
-            if (err) return res.json("ERROR INSERTANDO DATOS: " , err);
-            return res.json({Status: "Exito"});
+            if (err) return res.json("ERROR INSERTANDO DATOS: ", err);
+            return res.json({ Status: "Exito" });
         })
     })
 }
@@ -57,22 +57,22 @@ export const login = (req, res) => {
     //Checar el usuario
     const q = "SELECT * FROM users WHERE username = ?";
 
-    db.query(q, [req.body.username], (err,data) =>{
-        if(err) return res.json({Error: "EROR EN EL SERVIDO PARA INGRESAR"});
-        if(data.length > 0){
-            bcrypt.compare(req.body.password.toString(), data[0].password, (err , response) =>{
-                if(err) return res.json({Error: "ERROR EN LA CONTRASEÑA"});
-                if(response) {
+    db.query(q, [req.body.username], (err, data) => {
+        if (err) return res.json({ Error: "ERROR EN EL SERVIDOR PARA INGRESAR" });
+        if (data.length > 0) {
+            bcrypt.compare(req.body.password.toString(), data[0].password, (err, response) => {
+                if (err) return res.json({ Error: "ERROR EN LA CONTRASEÑA" });
+                if (response) {
                     const name = data[0].name;
-                    const token = jwt.sign({name}, "jwt-secret-key" , {expiresIn: '1d'});
+                    const token = jwt.sign({ name }, "jwt-secret-key", { expiresIn: '1d' });
                     res.cookie('token', token);
-                    return res.json({Status: "Exito"})
+                    return res.json({ Status: "Exito" })
                 } else {
-                    return res.json({Error: "Contraseña incorrecta"});
+                    return res.json({ Error: "Contraseña incorrecta" });
                 }
             })
         } else {
-            return res.json({Error: "No existe el usuario"});
+            return res.json({ Error: "No existe el usuario" });
         }
     })
 }
@@ -80,5 +80,5 @@ export const login = (req, res) => {
 
 export const logout = (req, res) => {
     res.clearCookie('token');
-    return res.json({Status: "Exito"});
+    return res.json({ Status: "Exito" });
 }

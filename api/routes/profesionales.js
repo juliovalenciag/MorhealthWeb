@@ -1,10 +1,13 @@
 import express from "express";
-import { loginP, logoutP, registerP } from "../controllers/profesional.js";
+import { loginPro, logoutPro, registerPro, verifyProfesional } from "../controllers/profesional.js";
+
 
 const router = express.Router();
 
-router.post("/registro", registerP);
-router.post("/login", loginP);
-router.post("/logout", logoutP);
+router.post("/registerPro", registerPro);
+router.post("/loginPro", loginPro);
+router.post("/logoutPro", logoutPro);
+
+router.get('/p', verifyProfesional)
 
 export default router;

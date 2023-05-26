@@ -3,11 +3,12 @@ import { createBrowserRouter, RouterProvider, Route, Outlet, Form } from 'react-
 
 // Importaciones de la pagina de inicio
 import Home from "./home/Home";
-import SesionUser from "./pages/sesion/SesionUser";
-import SesionProfesional from "./pages/sesion/SesionProfesional";
 import MorhealthUser from "./pages/MorhealthUser";
 
 //Importaciones de las sesiones
+import SesionUser from "./pages/sesion/SesionUser";
+import SesionProfesional from "./pages/sesion/SesionProfesional";
+import MorhealthProfesional from "./pages/MorhealthProfesional";
 
 //Importaciones de morhealth para usuarios
 
@@ -19,6 +20,12 @@ const LayoutInicio = () => {
 }
 
 const Layout = () => {
+  return (
+    <Outlet />
+  )
+}
+
+const LayoutP = () => {
   return (
     <Outlet />
   )
@@ -42,14 +49,11 @@ const router = createBrowserRouter([
   {
     path: '/ingresar',
     element: <SesionUser />,
-    children: [
-      {
-        path: '/ingresarprofesional',
-        element: <SesionProfesional />
-      }
-    ]
   },
-
+  {
+    path: '/ingresar/profesional',
+    element: <SesionProfesional />,
+  },
   //Rutas para morhealth Usuario
   {
     path: '/morhealth',
@@ -64,12 +68,12 @@ const router = createBrowserRouter([
 
   //Rutas para morhealth Profesionales
   {
-    path: '/',
-    element: <LayoutInicio />,
+    path: '/morhealthp',
+    element: <LayoutP />,
     children: [
       {
-        path: '/',
-        element: <Home />
+        path: '/morhealthp',
+        element: <MorhealthProfesional />
       }
     ]
   }
@@ -83,11 +87,11 @@ function App() {
   return (
 
 
-        <div className='App'>
-          <div className="contenedorGeneral">
-            <RouterProvider router={router} />
-          </div>
-        </div>
+    <div className='App'>
+      <div className="contenedorGeneral">
+        <RouterProvider router={router} />
+      </div>
+    </div>
 
 
   );

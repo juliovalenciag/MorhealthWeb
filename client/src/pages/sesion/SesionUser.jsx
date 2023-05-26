@@ -1,171 +1,222 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { v } from '../../styles/variables';
 
 const SesionUser = () => {
-
     const navigate = useNavigate();
     axios.defaults.withCredentials = true;
 
     const [signIn, toggle] = useState(true);
+    const [showPassword, setShowPassword] = useState(false);
 
-    const [activeRegistration, setActiveRegistration] = useState("user");
+
+    const togglePasswordVisibility = () => {
+        setShowPassword((prevShowPassword) => !prevShowPassword);
+    };
 
     const showUserRegistration = () => {
-        setActiveRegistration("user");
         toggle(false);
     };
 
-
     const [loginInputs, setLoginInputs] = useState({
-        username: "",
-        password: "",
+        username: '',
+        password: '',
     });
 
-
     const [registerInputs, setRegisterInputs] = useState({
-        username: "",
-        password: "",
-        email: "",
-        name: "",
-        lastname_p: "",
-        lastname_m: "",
-        gender: "",
-        age: ""
+        username: '',
+        password: '',
+        email: '',
+        name: '',
+        lastname_p: '',
+        lastname_m: '',
+        gender: '',
+        age: '',
     });
 
     const handleChangeR = (e) => {
         const { name, value } = e.target;
-        setRegisterInputs(prev => ({ ...prev, [name]: value }));
-    }
+        setRegisterInputs((prev) => ({ ...prev, [name]: value }));
+    };
 
     const handleChangeL = (e) => {
         const { name, value } = e.target;
-        setLoginInputs(prev => ({ ...prev, [name]: value }));
-    }
+        setLoginInputs((prev) => ({ ...prev, [name]: value }));
+    };
 
     const handleSubmitR = (e) => {
         e.preventDefault();
-        axios.post('http://localhost:8080/api/users/register', registerInputs)
-            .then(res => {
-                if (res.data.Status === "Exito") {
-                    navigate('/ingresar')
+        axios
+            .post('http://localhost:8080/api/users/register', registerInputs)
+            .then((res) => {
+                if (res.data.Status === 'Exito') {
+                    toggle(true);
                 } else {
-                    alert("ERROR");
+                    alert('ERROR');
                 }
             })
-            .then(err => console.log(err));
-    }
+            .catch((err) => console.log(err));
+    };
 
     const handleSubmitL = (e) => {
         e.preventDefault();
-        axios.post('http://localhost:8080/api/users/login', loginInputs)
-            .then(res => {
-                if (res.data.Status === "Exito") {
-                    navigate('/morhealth')
+        axios
+            .post('http://localhost:8080/api/users/login', loginInputs)
+            .then((res) => {
+                if (res.data.Status === 'Exito') {
+                    navigate('/morhealth');
                 } else {
                     alert(res.data.Error);
                 }
             })
-            .then(err => console.log(err));
-    }
+            .catch((err) => console.log(err));
+    };
 
     return (
         <Container>
-            <div>
-                <h1>Registrarse como usuario</h1>
-                <form onSubmit={handleSubmitR}>
-                    <div>
-                        <label htmlFor='name'><b>Name</b></label>
-                        <br />
-                        <input type='text' onChange={handleChangeR} placeholder='Ingresa tu nombre' name='name' />
-                    </div>
-                    <div>
-                        <label htmlFor='name'><b>Apellido P</b></label>
-                        <br />
-                        <input type='text' onChange={handleChangeR} placeholder='Ingresa tu apellidoP' name='lastname_p' />
-                    </div>
-                    <div>
-                        <label htmlFor='name'><b>Apellido M</b></label>
-                        <br />
-                        <input type='text' onChange={handleChangeR} placeholder='Ingresa tu apellidoM' name='lastname_m' />
-                    </div>
-                    <div>
-                        <label htmlFor='name'><b>Genero</b></label>
-                        <br />
-                        <select id='gender' name='gender' onChange={handleChangeR}>
-                            <option value=''></option>
-                            <option value='1'>Hombre</option>
-                            <option value='2'>Mujer</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label htmlFor='name'><b>Edad</b></label>
-                        <br />
-                        <input type='number' onChange={handleChangeR} placeholder='Ingresa tu edad' name='age' />
-                    </div>
-                    <div>
-                        <label htmlFor='name'><b>Username</b></label>
-                        <br />
-                        <input type='text' onChange={handleChangeR} placeholder='Ingresa tu username' name='username' />
-                    </div>
-                    <div>
-                        <label htmlFor='name'><b>Email</b></label>
-                        <br />
-                        <input type='email' onChange={handleChangeR} placeholder='Ingresa tu email' name='email' />
-                    </div>
-                    <div>
-                        <label htmlFor='name'><b>Contraseña</b></label>
-                        <br />
-                        <input type='password' onChange={handleChangeR} placeholder='Ingresa tu contraseña' name='password' />
-                    </div>
-                    <button type='submit'>Registrarse</button>
+            <SignUpContainer signIn={signIn}>
+                <SesionForm onSubmit={handleSubmitR}>
+                    <SesionTitle>Registrarse como usuario</SesionTitle>
 
-                </form>
-            </div>
+                    <SesionInput
+                        required
+                        type="text"
+                        onChange={handleChangeR}
+                        placeholder="Ingresa tu nombre"
+                        name="name"
+                    />
+                    <SesionInput
+                        required
+                        type="text"
+                        onChange={handleChangeR}
+                        placeholder="Ingresa tu apellido paterno"
+                        name="lastname_p"
+                    />
+                    <SesionInput
+                        required
+                        type="text"
+                        onChange={handleChangeR}
+                        placeholder="Ingresa tu apellido materno"
+                        name="lastname_m"
+                    />
 
-            <div>
-                <p>--------------</p>
-                <h1>Iniciar sesión</h1>
-                <form onSubmit={handleSubmitL}>
-                    <div>
-                        <label htmlFor='text'> <b> Username </b> </label>
-                        <br />
-                        <input type='text' onChange={handleChangeL} placeholder='Username' name='username' />
-                    </div>
-                    <div>
-                        <label htmlFor='text'> <b> Contraseña </b> </label>
-                        <br />
-                        <input type='password' onChange={handleChangeL} placeholder='Contraseña' name='password' />
-                    </div>
-                    <div>
-                        <button className='flex' type='submit'>Ingresar</button>
-                    </div>
-                </form>
-            </div>
+                    <SesionInput
+                        required
+                        type="number"
+                        onChange={handleChangeR}
+                        placeholder="Ingresa tu edad"
+                        name="age"
+                        min="15"
+                        max="64"
+                    />
+
+                    <Select id="gender" name="gender" onChange={handleChangeR}>
+                        <option value="">Seleccione su género</option>
+                        <option value="1">Hombre</option>
+                        <option value="2">Mujer</option>
+                    </Select>
+
+                    <SesionInput
+                        required
+                        type="text"
+                        onChange={handleChangeR}
+                        placeholder="Ingresa tu username"
+                        name="username"
+                    />
+
+                    <SesionInput
+                        required
+                        type="email"
+                        onChange={handleChangeR}
+                        placeholder="Ingresa tu email"
+                        name="email"
+                    />
+
+                    <InputContainer>
+                        <SesionInput
+                            required
+                            type={showPassword ? 'text' : 'password'}
+                            onChange={handleChangeR}
+                            placeholder="Ingresa tu contraseña"
+                            name="password"
+                        />
+                        <ShowPasswordButton
+                            type="button"
+                            onClick={togglePasswordVisibility}
+                        >
+                            {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
+                        </ShowPasswordButton>
+                    </InputContainer>
+                    <SesionButton type="submit">Registrarse</SesionButton>
+                </SesionForm>
+            </SignUpContainer>
+
+            <SignInContainer signIn={signIn}>
+                <SesionForm onSubmit={handleSubmitL}>
+                    <SesionTitle>Iniciar sesión</SesionTitle>
+
+                    <SesionInput
+                        required
+                        type="text"
+                        onChange={handleChangeL}
+                        placeholder="Username"
+                        name="username"
+                    />
+
+                    <InputContainer>
+                        <SesionInput
+                            required
+                            type={showPassword ? 'text' : 'password'}
+                            onChange={handleChangeL}
+                            placeholder="Contraseña"
+                            name="password"
+                        />
+                        <ShowPasswordButton
+                            type="button"
+                            onClick={togglePasswordVisibility}
+                        >
+                            {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
+                        </ShowPasswordButton>
+                    </InputContainer>
+
+                    <SesionAnchor>¿Olvidaste tu contraseña?</SesionAnchor>
+
+                    <SesionButton className="flex" type="submit">
+                        Ingresar
+                    </SesionButton>
+                </SesionForm>
+            </SignInContainer>
 
             <OverlayContainer signIn={signIn}>
                 <Overlay signIn={signIn}>
                     <LeftOverlayPanel signIn={signIn}>
-                        <SesionTitle>Bienvenido de vuelta</SesionTitle>
-                        <Paragraph>Para mantenerse conectado</Paragraph>
-                        <GhostButton onClick={() => toggle(true)}>
+                        <SesionTitle>Bienvenido,</SesionTitle>
+                        <Paragraph>Si ya tienes cuenta: </Paragraph>
+                        <GhostButton2 onClick={() => toggle(true)}>
                             Iniciar sesión
-                        </GhostButton>
+                        </GhostButton2>
                     </LeftOverlayPanel>
 
                     <RightOverlayPanel signIn={signIn}>
-                        <SesionTitle>Hola, amigo</SesionTitle>
-                        <Paragraph>Registrarse como: </Paragraph>
-                        <GhostButton onClick={showUserRegistration}>Usuario</GhostButton>
+                        <SesionTitle>Bienvenido,</SesionTitle>
+                        <Paragraph>Registrarse como:</Paragraph>
+                        <GhostButton2 onClick={showUserRegistration}>Usuario</GhostButton2>
+                        <Paragraph>Si eres un profesional, </Paragraph>
+                        <Link to='/ingresar/profesional'>
+                            <GhostButton >Profesional</GhostButton>
+                        </Link>
+                        <Link to='/'>
+                            <Paragraph1>Volver al inicio</Paragraph1>
+                        </Link>
                     </RightOverlayPanel>
                 </Overlay>
             </OverlayContainer>
         </Container>
-    )
-}
+    );
+};
 
 const Container = styled.div`
  display: flex;
@@ -198,8 +249,6 @@ const ShowPasswordButton = styled.button`
   top: 50%;
   transform: translateY(-50%);
 `;
-
-
 
 const Select = styled.select`
   background-color: #eee;
@@ -276,7 +325,7 @@ const SesionInput = styled.input`
 `;
 
 const SesionButton = styled.button`
-    border-radius: 20px;
+    border-radius: 10px;
     border: 1px solid #216B91;
     background-color: #216B91;
     color: #ffffff;
@@ -292,12 +341,15 @@ const SesionButton = styled.button`
     &:focus {
         outline: none;
     }
+    &:hover {
+        background-color: #223159;
+    }
 `;
 
-const GhostButton = styled.button`
-    border: 1px solid #ffffff;
-    border-radius: 20px;
-    background-color: transparent;
+const GhostButton2 = styled.button`
+    border: 2px solid #223159;
+    border-radius: 10px;
+    background-color: #031728;
     color: #ffffff;
     font-size: 12px;
     font-weight: bold;
@@ -310,6 +362,31 @@ const GhostButton = styled.button`
     }
     &:focus {
         outline: none;
+    }
+    &:hover{
+        background-color: #216B91;
+    }
+`;
+
+const GhostButton = styled.button`
+    border: 1px solid #ffffff;
+    border-radius: 10px;
+    background-color: transparent;
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 8px 25px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: transform 80ms ease-in;
+    &:active {
+        transform: scale(0.95);
+    }
+    &:focus {
+        outline: none;
+    }
+    &:hover{
+        background-color: #031728;
     }
 `;
 
@@ -392,6 +469,17 @@ const Paragraph = styled.p`
     line-height: 20px;
     letter-spacing: 0.5px;
     margin: 20px 0 30px;
+`;
+
+const Paragraph1 = styled.p`
+    font-size: 15px;
+    font-weight: 100;
+    line-height: 20px;
+    letter-spacing: 0.5px;
+    margin: 20px 0 30px;
+    &:hover{
+        color: #D9D9D9;
+    }
 `;
 
 
