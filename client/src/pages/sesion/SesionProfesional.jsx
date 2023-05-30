@@ -149,9 +149,9 @@ const SesionProfesional = () => {
 
                     <Select id="occupation" name="occupation" onChange={handleChangeR}>
                         <option value="">Seleccione su ocupación</option>
-                        <option value="1">Médico</option>
-                        <option value="2">Nutriólogo</option>
-                        <option value="2">Entrenador</option>
+                        <option value="medicos">Médico</option>
+                        <option value="nutriologo">Nutriólogo</option>
+                        <option value="entrenador">Entrenador</option>
                     </Select>
 
                     <SesionInput
